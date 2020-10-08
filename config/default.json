@@ -1,0 +1,3 @@
+{
+    "mongodb": "mongodb+srv://redeyedb:cisco123@cluster0.yp66n.mongodb.net/product_info?retryWrites=true&w=majority"
+}
