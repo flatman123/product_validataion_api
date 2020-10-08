@@ -26,12 +26,20 @@ async (req, res) => {
         //Check Database for user
         const user = await User.findOne(email);
 
+        
         //CREATE USER
         if (user){
             console.log('user exists');
         }
 
             // Create user Avatar
+        const url = gravatar.url(
+            email,
+            {
+                s: '200',
+                r: 'pg',
+                d: 'robohash'
+            });
 
 
             // encrypt user password before creation
