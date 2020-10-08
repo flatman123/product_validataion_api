@@ -40,7 +40,7 @@ async (req, res) => {
             {
                 s: '200',
                 r: 'pg',
-                d: 'db'
+                d: 'robohash'
             });
 
             // encrypt user password before creation of user in database
@@ -57,7 +57,7 @@ async (req, res) => {
             // return token to user for protected route
 
 
-
+            
         
     } catch (err) {
         //User doesn't exist error
