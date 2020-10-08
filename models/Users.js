@@ -3,18 +3,19 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     name: {
-        type: String
+        type: String,
+        required: true
     },
     email: {
         type: String,
         required: true
     },
-    pwd: {
-        type: String,
-        required: true
-    },
     avatar: {
         type: String
+    },
+    password: {
+        type: String,
+        required: true
     },
     products: {
         type: String
@@ -25,4 +26,4 @@ const UserSchema = new Schema({
     },
 });
 
-module.exports = User = mongoose.model('user', UserSchema);
+module.exports = User = mongoose.model('amzuser', UserSchema);

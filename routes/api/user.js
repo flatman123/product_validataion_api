@@ -6,7 +6,7 @@ var gravatar = require('gravatar');
 
 
 
-router.post('/api/user', [
+router.post('/', [
     // Check User Input
     check('email', 'A valid email address is required').isEmail(),
     check('name', 'Missing contents in name field!').not().isEmpty(),
@@ -17,23 +17,26 @@ async (req, res) => {
     const errors = validationResult(req);
    
     if (!errors.isEmpty()) {
-            res.status(401).json([{ errors: errors.array() }]);
+            return res.status(400).json([{ errors: errors.array() }]);
         };
 
-    const { name, email, password } = req.body
+    const { name, email, password } = req.body;
 
-    try{
+
+    try {
         //Check Database for user
-        const user = await User.findOne(email);
+        let user = await User.findOne({email});
 
+        if (user) {
+            return res.status(400).json([
+                { errors: 'That user already exists!' }
+            ]);
+        };
         
-        //CREATE USER
-        if (user){
-            console.log('user exists');
-        }
+        // CREATING USER
 
             // Create user Avatar
-        const url = gravatar.url(
+        const avatar = gravatar.url(
             email,
             {
                 s: '200',
@@ -41,15 +44,23 @@ async (req, res) => {
                 d: 'robohash'
             });
 
+            // encrypt user password before creation of user in database
+            user = new User({
+                name,
+                email,
+                avatar,
+                password,
+            });
 
-            // encrypt user password before creation
-
+            // Push new user to database
+            await user.save();
 
             // return token to user for protected route
         
-    } catch(err) {
+    } catch (err) {
         //User doesn't exist error
-        res.status(500).json([{ msg: 'Server Error'}])
+        console.error(err.message);
+        res.status(500).send([{ msg: 'Server Error'}]);
     };
 
 

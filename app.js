@@ -8,7 +8,6 @@ const port = process.env.PORT || 3018;
 // Init Middleware
 app.use(express.json({extended: false}));
 
-seedDatabase(app);
 
 //Connect to Database
 connectDB();
@@ -16,7 +15,7 @@ console.log(`Server is connected via port ${port}`);
 
 
 // Routes
-app.use('/', require('./routes/api/user'));
+app.use('/api/user', require('./routes/api/user'));
 app.use('/', require('./routes/api/profile'));
 
 
