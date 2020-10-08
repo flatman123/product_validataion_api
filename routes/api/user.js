@@ -34,28 +34,30 @@ async (req, res) => {
         };
         
         // CREATING USER
-
             // Create user Avatar
         const avatar = gravatar.url(
             email,
             {
                 s: '200',
                 r: 'pg',
-                d: 'robohash'
+                d: 'db'
             });
 
             // encrypt user password before creation of user in database
-            user = new User({
-                name,
-                email,
-                avatar,
-                password,
-            });
+        user = new User({
+            name,
+            email,
+            avatar,
+            password,
+        });
 
             // Push new user to database
-            await user.save();
+        await user.save();
 
             // return token to user for protected route
+
+
+
         
     } catch (err) {
         //User doesn't exist error
