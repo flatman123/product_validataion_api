@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../../models/Users');
 const { check, validationResult } = require('express-validator');
 var gravatar = require('gravatar');
+const bcyrpt = require('bcrypt');
 
 
 
@@ -50,6 +51,12 @@ async (req, res) => {
             avatar,
             password,
         });
+
+        const saltRounds = 10;
+        salt = await bcyrpt.genSalt(saltRounds);
+        user.password = await bcyrpt.hash(password, salt);
+
+
 
             // Push new user to database
         await user.save();
