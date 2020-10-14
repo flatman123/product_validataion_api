@@ -16,7 +16,7 @@ console.log(`Server is connected via port ${port}`);
 
 // Routes
 app.use('/api/user', require('./routes/api/user'));
-app.use('/', require('./routes/api/profile'));
+app.use('/api/profile', require('./routes/api/profile'));
 
 
 app.listen(port);
