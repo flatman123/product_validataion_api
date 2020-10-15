@@ -37,15 +37,9 @@ async (req, res) => {
         
         // CREATING USER
 
-        user = new User({
-            name,
-            email,
-            avatar,
-            password,
-        });
         
             // Create user Avatar
-        const avatar = gravatar.url(
+        avatar = gravatar.url(
             email,
             {
                 s: '200',
@@ -53,12 +47,20 @@ async (req, res) => {
                 d: 'robohash'
             });
 
+
+        user = new User({
+            name,
+            email,
+            avatar,
+            password,
+        });
+
             // encrypt user password before creation of user in database
 
         const saltRounds = 10;
         salt = await bcyrpt.genSalt(saltRounds);
         user.password = await bcyrpt.hash(password, salt);
-
+        
         // return token to user for protected route
 
             // Build Payload for token.
@@ -72,18 +74,16 @@ async (req, res) => {
         const jwtToken = jwt.sign(
             jwtPayload,
             jwtSecret,
-            { expiresIn: '1h' });
-
-
+            { expiresIn: 360000 },
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token });
+            });
 
 
             // Push new user to database
         await user.save();
 
-            
-
-
-            
         
     } catch (err) {
         //User doesn't exist error
