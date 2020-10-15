@@ -9,14 +9,14 @@ const port = process.env.PORT || 3018;
 app.use(express.json({extended: false}));
 
 
-//Connect to Database
+// Connect to Database
 connectDB();
 console.log(`Server is connected via port ${port}`);
 
 
 // Routes
 app.use('/api/user', require('./routes/api/user'));
-app.use('/api/auth', require('/routes/api/auth'));
+app.use('/api/auth', require('./routes/api/auth'));
 app.use('/api/profile', require('./routes/api/profile'));
 
 
