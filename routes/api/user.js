@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../../models/Users');
 const { check, validationResult } = require('express-validator');
 const gravatar = require('gravatar');
-const bcyrpt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwtSecret = require('config').get('jwtSecret');
 const jwt = require('jsonwebtoken');
 
@@ -36,8 +36,7 @@ async (req, res) => {
         };
         
         // CREATING USER
-
-        
+                
             // Create user Avatar
         avatar = gravatar.url(
             email,
@@ -58,8 +57,8 @@ async (req, res) => {
             // encrypt user password before creation of user in database
 
         const saltRounds = 10;
-        salt = await bcyrpt.genSalt(saltRounds);
-        user.password = await bcyrpt.hash(password, salt);
+        salt = await bcrypt.genSalt(saltRounds);
+        user.password = await bcrypt.hash(password, salt);
         
         // return token to user for protected route
 
