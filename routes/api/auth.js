@@ -46,7 +46,34 @@ router.post('/', [
     try{
         let userData = User.findOne({ email });
         
-        if 
+        if (!userData) {
+            return res.status(400).json([{ msg: 'Invalid Credentials' }]);
+        };
+        const { email, password } = req.body;
+
+        const saltRounds = 10;
+        salt = await bcrypt.genSalt(saltRounds);
+        user.password = await bcrypt.hash(password, salt);
+        
+        // return token to user for protected route
+
+            // Build Payload for token.
+        const jwtPayload = {
+            appUser: {
+                id: user.id
+            }
+        };
+
+        // Signed Token.
+        const jwtToken = jwt.sign(
+            jwtPayload,
+            jwtSecret,
+            { expiresIn: 360000 },
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token });
+            });
+
 
     }catch(err) {
         res.status(400).json([{ msg: 'Server Error' }]);
