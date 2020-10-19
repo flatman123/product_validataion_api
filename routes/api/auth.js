@@ -14,7 +14,9 @@ router.get('/', auth, async function(req, res) {
     // Code for succesfull token authentication        
     try {
         // Fetch User from database
-        const userData = await User.findById(req.appUser.id).select('-password');
+        const userData = await User
+            .findById(req.appUser.id)
+            .select('-password');
         res.json(userData);
     } catch(err) {
         // console.error(err.messages)
@@ -44,19 +46,20 @@ router.post('/', [
     const { email, password } = req.body;
     
     try{
-        let userData = User.findOne({ email });
+        let user = User.findOne({ email });
         
-        if (!userData) {
+        if (!user) {
             return res.status(400).json([{ msg: 'Invalid Credentials' }]);
         };
         const { email, password } = req.body;
 
+        // Encrypt user's password
         const saltRounds = 10;
         salt = await bcrypt.genSalt(saltRounds);
         user.password = await bcrypt.hash(password, salt);
         
-        // return token to user for protected route
 
+        // return token to user for protected route
             // Build Payload for token.
         const jwtPayload = {
             appUser: {
@@ -74,9 +77,8 @@ router.post('/', [
                 res.json({ token });
             });
 
-
     }catch(err) {
-        res.status(400).json([{ msg: 'Server Error' }]);
+        res.status(400).json([{ msg: 'Invalid Credentials' }]);
     }
 });
 
