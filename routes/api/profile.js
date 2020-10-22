@@ -8,7 +8,7 @@ const User = require('../../models/Users');
 // desc Get User profile POST login.
 // @Access Private
 
-router.get('/api/profile', auth, async (req, res) => {
+router.get('/me', auth, async (req, res) => {
 
     try {
         //locate User Profile by ID; in database
