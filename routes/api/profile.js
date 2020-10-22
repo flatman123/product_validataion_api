@@ -1,13 +1,25 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('../../middleware/auth');
+const User = require('../../models/Users');
 
 
-// GET /api/profile
-//
-router.get('/api/profile', (req, res) => {
+// @Route /api/profile/me
+// desc Get User profile POST login.
+// @Access Private
 
-    // test
-    res.send('Proile Router');
+router.get('/api/profile', auth, async (req, res) => {
+
+    try {
+        //locate User Profile by ID; in database
+        const profile = await User.findOne(req.body.id);
+
+        !profile ? res.status(400).json( {msg: 'That user does not exist' }) : null
+
+    } catch(err) {
+        console.error(err.messages);
+        res.status(500).send('Server Error');
+    }
 });
 
 module.exports = router;
