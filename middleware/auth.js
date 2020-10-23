@@ -16,6 +16,8 @@ module.exports = function(req, res, next) {
         const decodeToken = jwt.verify(token, tokenSecret);
 
         // Attach decoded payload to user's request
+            //We've essentially modified the body of the 
+            // request with the code, below.
         req.appUser = decodeToken.appUser;
         next();
 
