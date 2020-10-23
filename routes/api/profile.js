@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
+const Profile = require('../../models/Profile');
 const User = require('../../models/Users');
 
 
@@ -11,10 +12,12 @@ const User = require('../../models/Users');
 router.get('/me', auth, async (req, res) => {
 
     try {
-        //locate User Profile by ID; in database
-        const profile = await User.findOne(req.body.id);
+        //locate User Profile by ID within the in database
+        const profile = await Profile.findOne( { userPro: req.body.id }).populate('user',
+            ['name', 'avatar']);
 
-        !profile ? res.status(400).json( {msg: 'That user does not exist' }) : null
+        !profile ? res.status(400).json( { msg: 'There is no profile for that user in the database.' }) : null;
+        
 
     } catch(err) {
         console.error(err.messages);
