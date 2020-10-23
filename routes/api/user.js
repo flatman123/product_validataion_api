@@ -63,6 +63,8 @@ async (req, res) => {
         // return token to user for protected route
 
             // Build Payload for token.
+            // Essentially the token will equal
+                // the user's id that in the database.
         const jwtPayload = {
             appUser: {
                 id: user.id
