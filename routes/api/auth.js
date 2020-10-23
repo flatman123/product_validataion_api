@@ -7,7 +7,7 @@ const { check, validationResult } = require('express-validator');
 
 
 // GET @Route /api/auth
-// desc  User Authentication
+// desc  Authenticat user information and return user Data without pwd.
 // Access Public
 
 router.get('/', auth, async function(req, res) {
@@ -15,7 +15,7 @@ router.get('/', auth, async function(req, res) {
     try {
         // Fetch User from database
         const userData = await User
-            .findById(req.appUser.id)
+            .findById(req.appUser.id) // <-- this was sent in the 'auth' middleware
             .select('-password');
         res.json(userData);
     } catch(err) {
@@ -51,7 +51,6 @@ router.post('/', [
         if (!user) {
             return res.status(400).json([{ msg: 'Invalid Credentials' }]);
         };
-        const { email, password } = req.body;
 
         // Encrypt user's password
         const saltRounds = 10;
