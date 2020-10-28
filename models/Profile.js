@@ -20,7 +20,7 @@ const ProfileSchema = Schema({
         type: String
     },
     amazonSellerType: {
-        type: [String],
+        type: String,
         required: true
     },
     bio: {
