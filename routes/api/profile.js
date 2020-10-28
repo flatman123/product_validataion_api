@@ -39,7 +39,7 @@ router.post('/', [auth, [
     // Code
     const error = validationResult(req);
     if (!error.isEmpty()){
-        return res.status(400).json({ msg: 'Amazon seller type is required' });
+        return res.status(400).json({ msg: 'Amazon seller type must be FBA or FBM' });
     };
 
     //Build profile object
