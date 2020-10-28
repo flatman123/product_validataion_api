@@ -15,7 +15,7 @@ router.get('/', auth, async function(req, res) {
     try {
         // Fetch User from database
         const userData = await User
-            .findById(req.appUser.id) // <-- this was sent in the 'auth' middleware
+            .findById(req.appUser.id) // <-- this was setup in the 'auth' middleware
             .select('-password');
         res.json(userData);
     } catch(err) {
