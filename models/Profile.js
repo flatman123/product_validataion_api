@@ -26,6 +26,23 @@ const ProfileSchema = Schema({
     bio: {
         type: String
     },
+    social: {
+        facebook : {
+            type: String
+        },
+        youtube: {
+            type: String
+        },
+        instagram: {
+            type: String
+        },
+        linkedin: {
+            type: String
+        },
+        twitter: {
+            type: String
+        }
+    },
     date : {
         type: Date,
         default: Date.now
