@@ -8,6 +8,10 @@ const jwtSecret = require('config').get('jwtSecret');
 const jwt = require('jsonwebtoken');
 
 
+// POST /api/auth/user
+// desc Get User information to create account
+// @Access Public  
+
 router.post('/', [
     // Check User Input
     check('email', 'A valid email address is required').isEmail(),
@@ -23,7 +27,6 @@ async (req, res) => {
         };
 
     const { name, email, password } = req.body;
-
 
     try {
         //Check Database for user
@@ -91,13 +94,6 @@ async (req, res) => {
         console.error(err.message);
         res.status(500).send([{ msg: 'Server Error'}]);
     };
-
-
-    // Profile Avatar
-
-
-    // Return_Json    
-
 });
 
 module.exports = router;
