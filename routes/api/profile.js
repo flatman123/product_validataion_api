@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { json } = express.json();
 const auth = require('../../middleware/auth');
 const Profile = require('../../models/Profile');
 const User = require('../../models/Users');
@@ -24,6 +25,7 @@ router.get('/me', auth, async (req, res) => {
     }
 });
 
+
 // @Route /api/profile/
 // desc Create and Update user profile
 // @Access Private
@@ -39,7 +41,6 @@ router.post('/', [auth, [
     if (!error.isEmpty()){
         return res.status(400).json({ msg: 'Amazon seller type is required' });
     };
-
 
     //Build profile object
 
@@ -58,33 +59,44 @@ router.post('/', [auth, [
     } = req.body
 
     const profileObject = {};
-    for (const field in profileFields) {
-        if (field) {
-            profileObject.field = field;
-        };
-    };
     
-    try {
-        let userProfileExists = await Profile.findOne({ user: req.user.id });
+    if (companyName) profileObject.companyName = companyName;
+    if (comapanyAddress) profileObject.comapanyAddress = comapanyAddress;
+    if (location) profileObject.location = location;
+    if (companyWebsite) profileObject.companyWebsite = companyWebsite;
+    if (amazonSellerType) profileObject.amazonSellerType = amazonSellerType;
+    if (bio) profileObject.bio = bio;
+    profileObject.user = req.appUser.id;
 
+    // Build Social Object
+    profileObject.social = {};
+    if (twitter) profileObject.social.twitter = twitter;
+    if (youtube) profileObject.social.youtube = youtube;
+    if (facebook) profileObject.social.facebook = facebook;
+    if (linkedin) profileObject.social.linkedin = linkedin;
+    if (instagram) profileObject.social.instagram = instagram;
+
+    try {
+        let userProfile = await Profile.findOne({ user: req.appUser.id });
+        
         // Update Profile
-        if (userProfileExists) {
+        if (userProfile) {
             await Profile.findByIdAndUpdate(
-                { user: req.user.id },
+                { user: req.appUser.id },
                 { $set: profileObject },
                 { new : true }
             );
         };
 
         // Create Profile
-        
+        const profile = new Profile(profileObject);
+        await profile.save();
+        res.json(profile);
 
     } catch(err) {
         console.error(err.message);
         res.status(500).json({ msg: 'Server Error' });
-    }
-
-
+    };
 });
 
 module.exports = router;
