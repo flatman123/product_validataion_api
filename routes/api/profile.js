@@ -40,8 +40,49 @@ router.post('/', [auth, [
         return res.status(400).json({ msg: 'Amazon seller type is required' });
     };
 
-    // Check for profile
+
+    //Build profile object
+
+    const profileFields = {
+       companyName,
+       comapanyAddress,
+       companyWebsite,
+       location,
+       amazonSellerType,
+       bio,
+       facebook,
+       youtube,
+       instagram,
+       twitter,
+       linkedin
+    } = req.body
+
+    const profileObject = {};
+    for (const field in profileFields) {
+        if (field) {
+            profileObject.field = field;
+        };
+    };
     
+    try {
+        let userProfileExists = await Profile.findOne({ user: req.user.id });
+
+        // Update Profile
+        if (userProfileExists) {
+            await Profile.findByIdAndUpdate(
+                { user: req.user.id },
+                { $set: profileObject },
+                { new : true }
+            );
+        };
+
+        // Create Profile
+        
+
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server Error' });
+    }
 
 
 });
