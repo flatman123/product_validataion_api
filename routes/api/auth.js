@@ -4,6 +4,10 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const mongoose = require('mongoose');
 const { check, validationResult } = require('express-validator');
+const jwtSecret = require('config').get('jwtSecret');
+const { findOne } = require('../../models/Users');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 // GET @Route /api/auth
@@ -36,7 +40,7 @@ router.post('/', [
         .isEmail(),
     check('password', 'A password Is Required')
         .exists()
-], async function(req, res) {
+], async(req, res) => {
     // Check for email in database
     const errors = validationResult(req);
 
@@ -44,36 +48,32 @@ router.post('/', [
       return res.status(400).json({ errors: errors.array() });
     }
     const { email, password } = req.body;
-    
+
     try{
-        let user = User.findOne({ email });
-        
+        let user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json([{ msg: 'Invalid Credentials' }]);
         };
-
-        // Encrypt user's password
-        const saltRounds = 10;
-        salt = await bcrypt.genSalt(saltRounds);
-        user.password = await bcrypt.hash(password, salt);
+     
+        const correctPassword = await bcrypt.compare(password, user.password);
         
+        if (!correctPassword) {
+            return res.status(400).json([{ msg: 'Invalid Credentials' }]);
+        };
 
-        // return token to user for protected route
-            // Build Payload for token.
         const jwtPayload = {
             appUser: {
                 id: user.id
             }
         };
 
-        // Signed Token.
         const jwtToken = jwt.sign(
             jwtPayload,
             jwtSecret,
             { expiresIn: 360000 },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token });
+                return res.json({ token });
             });
 
     }catch(err) {
