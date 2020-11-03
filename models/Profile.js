@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const ProfileSchema = Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'appuser' // pulling in information from the Users model
     },
     companyName: {
         type: String
