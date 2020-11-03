@@ -105,7 +105,7 @@ router.post('/', [auth, [
 // @Access Public
 router.get('/', async (req, res) => {
     try {
-        const allProfiles = await Profile.find({}).populate('appuser', 'avatar');
+        const allProfiles = await Profile.find({}).populate('user',['name', 'avatar']);
         if (!allProfiles) {
             return res.status(400).json({ msg: 'Hmmm, seems like there are no profiles...' });
         }
