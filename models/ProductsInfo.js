@@ -13,11 +13,11 @@ const ProductInfoSchema = new mongoose.Schema({
             required: true
         },
         productName: {
-            type: String
+            type: String,
+            required: true
         },
         link: {
             type: String,
-            required: true
         },
         quantity: {
             type: String
