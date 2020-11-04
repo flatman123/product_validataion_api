@@ -49,7 +49,6 @@ async (req, res) => {
                 d: 'robohash'
             });
 
-
         user = new User({
             name,
             email,
@@ -83,7 +82,6 @@ async (req, res) => {
                 if (err) throw err;
                 res.json({ token });
             });
-
 
             // Push new user to database
         await user.save();
