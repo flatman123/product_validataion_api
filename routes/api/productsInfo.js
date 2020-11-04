@@ -11,7 +11,7 @@ const { json } = express.json();
 // GET /api/product-info/
 // @desc Get user products via id
 // @Accecs Private
-router.get('/my-product/:userID', [auth,
+router.get('/my-products/:userID', [auth,
     check('asin', 'Product asin is required')
         .not()
         .isEmpty(),
