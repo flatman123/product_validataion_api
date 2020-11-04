@@ -16,6 +16,8 @@ router.get('/my-product/:userID', [auth,
         .not()
         .isEmpty(),
     check('productName', 'A product name is required')
+        .not()
+        .isEmpty()
 ], async(req, res) => {
 
     const error = validationResult(req);
