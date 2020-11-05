@@ -27,10 +27,11 @@ router.get('/my-products/:userID', [auth,
     try {
         // Get user product Via Id
         const userProducts = await ProductInfo
-                                        .find({})
+                                        .findOne({ user: req.params.userID })
                                         .populate('user', ['name','avatar']);
         if (!userProducts) {
-            return res.status(400).send('You currently have no products on your list');
+            return res.status(400)
+                      .send('There are no products on your list');
 
         }
 
