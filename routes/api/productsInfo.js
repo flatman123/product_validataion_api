@@ -19,7 +19,6 @@ router.get('/my-products/:userID', [auth,
         .not()
         .isEmpty()
 ], async(req, res) => {
-
     const error = validationResult(req);
     if (!error.isEmpty()) {
         res.status(400).json({ error: error});
@@ -27,7 +26,13 @@ router.get('/my-products/:userID', [auth,
 
     try {
         // Get user product Via Id
+        const userProducts = await ProductInfo
+                                        .find({})
+                                        .populate('user', ['name','avatar']);
+        if (!userProducts) {
+            return res.status(400).send('You currently have no products on your list');
 
+        }
 
     } catch(err) {
         console.error(err);
