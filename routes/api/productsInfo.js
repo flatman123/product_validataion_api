@@ -56,7 +56,7 @@ router.get('/my-products/:userID', [auth,
         if (userProducts) {
             await ProductInfo.findByIdAndUpdate(
                 { user: req.appUser.id },
-                { $set: productInfo },
+                { $set: userProducts.unshift(productInfo) },
                 { new: true }
             );
         };
