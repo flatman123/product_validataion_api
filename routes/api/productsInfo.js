@@ -53,6 +53,8 @@ router.get('/my-products/:userID', [auth,
             .findOne({ user: req.params.userID })
             .populate('user', 'name');
         
+
+            // FIX THIS
         if (userProducts) {
             await ProductInfo.findByIdAndUpdate(
                 { user: req.appUser.id },
