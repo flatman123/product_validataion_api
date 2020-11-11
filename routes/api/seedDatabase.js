@@ -1,4 +1,4 @@
-const ProductInfo = require('../../models/Products');
+const ProductInfo = require('../../models/ProductsInfo');
 
 module.exports = function(app){
     //Testing the databse.
