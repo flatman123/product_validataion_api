@@ -1,4 +1,4 @@
-const ProductInfo = require('../models/Products');
+const Products = require('../../models/Products');
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
@@ -8,7 +8,7 @@ const { json } = express.json();
 // GET /api/product-info/
 // @desc Get user products via id
 // @Accecs Private
-router.get('/:userID', [auth,
+router.post('/user/:userID', [auth,
     check('asin', 'Product asin is required')
         .not()
         .isEmpty(),
@@ -43,29 +43,30 @@ router.get('/:userID', [auth,
     if (quality) productInfo.quality = quality;
     if (aesthetic) productInfo.aesthetic = aesthetic;
 
-
     try {
         // Get user product Via Id
-        let userProducts = await Products
+        let listOfProducts = await Products
                 .findOne({ user: req.params.userID })
-                .populate('user', 'name');
         
-
-            // Update Products
-        if (userProducts) {
+             // Update Products
+        if (listOfProducts) {
             await Products.findByIdAndUpdate(
                 { user: req.appUser.id },
-                { $set: userProducts.unshift(productInfo) },
+                { $set: { userProducts: userProducts.push(productInfo) } },
                 { new: true }
             );
         };
 
-        await Products.save(productInfo);
-        res.json(productInfo);
+        listOfProducts = new Products(productInfo);    
+    
+        await listOfProducts.save();
+        res.json(listOfProducts);
         
     } catch(err) {
-        console.error(err);
-        res.status(500).send('Server Error');
+        if (err.kind == 'ObjectId') {
+            console.error(err.message);
+            return res.status(500).send('Server Error');
+        };
     };
 });
 
