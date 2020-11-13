@@ -34,7 +34,7 @@ router.post('/user/:userID', [auth,
 
     const productInfo = {};
     productInfo.user = req.appUser.id;
-
+    
     if (asin) productInfo.asin = asin;
     if (productName) productInfo.productName = productName;
     if (link) productInfo.link = link;
@@ -42,6 +42,7 @@ router.post('/user/:userID', [auth,
     if (functionality) productInfo.functionality = functionality;
     if (quality) productInfo.quality = quality;
     if (aesthetic) productInfo.aesthetic = aesthetic;
+    console.log(productInfo);
 
     try {
         // Get user product Via Id
@@ -50,15 +51,18 @@ router.post('/user/:userID', [auth,
         
              // Update Products
         if (listOfProducts) {
-            await Products.findByIdAndUpdate(
+            listOfProducts.userProducts.unshift(productInfo);
+            await Products.findOneAndUpdate(
                 { user: req.appUser.id },
-                { $set: { userProducts: userProducts.push(productInfo) } },
+                { $set: listOfProducts },
                 { new: true }
             );
+            return res.send('Product list updated!');
         };
 
         listOfProducts = new Products(productInfo);    
-    
+        listOfProducts.userProducts.unshift(productInfo);
+
         await listOfProducts.save();
         res.json(listOfProducts);
         
