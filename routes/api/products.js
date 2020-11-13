@@ -42,16 +42,27 @@ router.post('/user/:userID', [auth,
     if (functionality) productInfo.functionality = functionality;
     if (quality) productInfo.quality = quality;
     if (aesthetic) productInfo.aesthetic = aesthetic;
-    console.log(productInfo);
 
     try {
         // Get user product Via Id
         let listOfProducts = await Products
-                .findOne({ user: req.params.userID })
+                .findOne({ user: req.params.userID });
+        
+
         
              // Update Products
         if (listOfProducts) {
+            const productIds = listOfProducts.userProducts
+                .filter(product => product['_id'])
+            
+            productInfo.forEach(id =)
+            // IF THE ID THAT IS ATTACHED TO THE PRODUCT BEING UPDATED IS IN THE 
+             // LIST OF ID'S, THEN GET THE INDEX OF THAT ID AND REPLACE IT WITH THE
+             // UPDATED PRODUCT INFORMATION.
+             
+            console.log(productIds);
             listOfProducts.userProducts.unshift(productInfo);
+        
             await Products.findOneAndUpdate(
                 { user: req.appUser.id },
                 { $set: listOfProducts },
