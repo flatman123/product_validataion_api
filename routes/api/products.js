@@ -47,19 +47,21 @@ router.post('/user/:userID', [auth,
         // Get user product Via Id
         let listOfProducts = await Products
                 .findOne({ user: req.params.userID });
-        
 
-        
              // Update Products
         if (listOfProducts) {
             const productIds = listOfProducts.userProducts
                 .filter(product => product['_id'])
             
             productInfo.forEach(id =)
-            // IF THE ID THAT IS ATTACHED TO THE PRODUCT BEING UPDATED IS IN THE 
-             // LIST OF ID'S, THEN GET THE INDEX OF THAT ID AND REPLACE IT WITH THE
-             // UPDATED PRODUCT INFORMATION.
-             
+            /*IF THE ID THAT IS ATTACHED TO THE PRODUCT BEING UPDATED IS IN THE 
+             LIST OF ID'S, THEN GET THE INDEX OF THAT ID AND REPLACE IT WITH THE
+            UPDATED PRODUCT INFORMATION. 
+
+             IF THE USER IS NOT UPDATING AN EXISTING PRODUCT, THEN THEY'RE EITHER
+             ADDING A WHOLE NEW PRODUCT OR ADDING THEIR FIRST PRODUCT.
+            */
+
             console.log(productIds);
             listOfProducts.userProducts.unshift(productInfo);
         
