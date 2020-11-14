@@ -45,18 +45,17 @@ router.post('/user/:userID', [auth,
 
     try {
         const productID = req.body._id;
-        // Get user product Via Id
+
         let listOfProducts = await Products
                 .findOne({ user: req.params.userID });
         
         if ( listOfProducts ) {
             const product = listOfProducts.userProducts.find(item => item['_id'] == productID);
             
+            // UPDATED EXISTING PRODUCT
             if ( product ) {
                 const productIndex = listOfProducts.userProducts.indexOf(product);                
                 listOfProducts.userProducts[productIndex] = productInfo;
-                
-                console.log('UPDATED-PRODUCT',listOfProducts)
 
                 await Products.findOneAndUpdate(
                     { user: req.appUser.id },
@@ -66,7 +65,7 @@ router.post('/user/:userID', [auth,
                 return res.send('Product Updated!');
             };
 
-            // Adding an additional product to the list.
+            // ADD ADDITIONAL PRODUCT TO USER PRODUCT LIST
             listOfProducts.userProducts.unshift(productInfo);
             await Products.findOneAndUpdate(
                 { user: req.appUser.id },
@@ -76,7 +75,7 @@ router.post('/user/:userID', [auth,
             return res.send('Product added to list!');
         };
 
-        // Adding first product to the list
+        // ADDING FIRST PRODUCT TO THE LIST
         listOfProducts = new Products(productInfo);
         listOfProducts.userProducts.unshift(productInfo);
         await listOfProducts.save();
