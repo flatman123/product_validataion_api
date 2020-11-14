@@ -48,37 +48,37 @@ router.post('/user/:userID', [auth,
         // Get user product Via Id
         let listOfProducts = await Products
                 .findOne({ user: req.params.userID });
-
-        if (listOfProducts) {
-
-        };
         
-        if (listOfProducts.includes(productID) && listOfProducts) {
-            const listOfProductIds = listOfProducts.userProducts
-                .filter(product => product['_id']);
-       
-            /*IF THE ID THAT IS ATTACHED TO THE PRODUCT BEING UPDATED IS IN THE 
-             LIST OF ID'S, THEN GET THE INDEX OF THAT ID AND REPLACE IT WITH THE
-            UPDATED PRODUCT INFORMATION. 
-
-             IF THE USER IS NOT UPDATING AN EXISTING PRODUCT, THEN THEY'RE EITHER
-             ADDING A WHOLE NEW PRODUCT OR ADDING THEIR FIRST PRODUCT.
-            */
-
-        //             // listOfProducts.userProducts.unshift(productInfo);
-
-            // await Products.findOneAndUpdate(
-            //     { user: req.appUser.id },
-            //     { $set: listOfProducts },
-            //     { new: true }
-            // );
+        if ( listOfProducts ) {
+            const product = listOfProducts.userProducts.find(item => item['_id'] == productID);
             
-            return res.send('Product list updated!');
+            if ( product ) {
+                const productIndex = listOfProducts.userProducts.indexOf(product);                
+                listOfProducts.userProducts[productIndex] = productInfo;
+                
+                console.log('UPDATED-PRODUCT',listOfProducts)
+
+                await Products.findOneAndUpdate(
+                    { user: req.appUser.id },
+                    { $set: listOfProducts },
+                    { new: true }
+                );
+                return res.send('Product Updated!');
+            };
+
+            // Adding an additional product to the list.
+            listOfProducts.userProducts.unshift(productInfo);
+            await Products.findOneAndUpdate(
+                { user: req.appUser.id },
+                { $set: listOfProducts },
+                { new: true }
+            );            
+            return res.send('Product added to list!');
         };
 
-        listOfProducts = new Products(productInfo);    
+        // Adding first product to the list
+        listOfProducts = new Products(productInfo);
         listOfProducts.userProducts.unshift(productInfo);
-
         await listOfProducts.save();
         res.json(listOfProducts);
         
