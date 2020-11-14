@@ -44,16 +44,19 @@ router.post('/user/:userID', [auth,
     if (aesthetic) productInfo.aesthetic = aesthetic;
 
     try {
+        const productID = req.body._id;
         // Get user product Via Id
         let listOfProducts = await Products
                 .findOne({ user: req.params.userID });
 
-             // Update Products
         if (listOfProducts) {
-            const productIds = listOfProducts.userProducts
-                .filter(product => product['_id'])
-            
-            productInfo.forEach(id =)
+
+        };
+        
+        if (listOfProducts.includes(productID) && listOfProducts) {
+            const listOfProductIds = listOfProducts.userProducts
+                .filter(product => product['_id']);
+       
             /*IF THE ID THAT IS ATTACHED TO THE PRODUCT BEING UPDATED IS IN THE 
              LIST OF ID'S, THEN GET THE INDEX OF THAT ID AND REPLACE IT WITH THE
             UPDATED PRODUCT INFORMATION. 
@@ -62,14 +65,14 @@ router.post('/user/:userID', [auth,
              ADDING A WHOLE NEW PRODUCT OR ADDING THEIR FIRST PRODUCT.
             */
 
-            console.log(productIds);
-            listOfProducts.userProducts.unshift(productInfo);
-        
-            await Products.findOneAndUpdate(
-                { user: req.appUser.id },
-                { $set: listOfProducts },
-                { new: true }
-            );
+        //             // listOfProducts.userProducts.unshift(productInfo);
+
+            // await Products.findOneAndUpdate(
+            //     { user: req.appUser.id },
+            //     { $set: listOfProducts },
+            //     { new: true }
+            // );
+            
             return res.send('Product list updated!');
         };
 
