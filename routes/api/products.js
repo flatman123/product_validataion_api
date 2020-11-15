@@ -5,10 +5,10 @@ const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
 const { json } = express.json();
 
-// GET /api/product-info/
+// PUT /api/product-info/
 // @desc Get user products via id
 // @Accecs Private
-router.post('/user/:userID', [auth,
+router.put('/user/:userID', [auth,
     check('asin', 'Product asin is required')
         .not()
         .isEmpty(),
@@ -88,5 +88,7 @@ router.post('/user/:userID', [auth,
         };
     };
 });
+
+// DELETE
 
 module.exports = router;
