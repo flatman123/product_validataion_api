@@ -97,18 +97,18 @@ router.delete('/user/:userID', auth, (req, res) => {
     try {
         const listOfProducts = await Products.findOne({ user: req.params.userID });
 
-        if ( listOfProducts ) {
+        if ( productID ) {
             const product = listOfProducts.userProducts.find(item => item['_id'] == productID);
             const productIndex = listOfProducts.userProducts.indexOf(product);                
             listOfProducts.userProducts.slice(productIndex);
 
             await Products.findOneAndDelete(
                 { user: req.appUser.id },
-                { $set: listOfProducts },
+                { $set: listOfProducts }, // <-- change logic
                 { new: true }
             );
             return res.send('Product Deleted!');
-
+        };
             // ADD ADDITIONAL PRODUCT TO USER PRODUCT LIST
             listOfProducts.userProducts.unshift(productInfo);
             await Products.findOneAndUpdate(
@@ -116,9 +116,8 @@ router.delete('/user/:userID', auth, (req, res) => {
                 { $set: listOfProducts },
                 { new: true }
             );            
-            return res.send('Product added to list!');
-        };
-        
+            return res.send('All products were deleted from list!');
+ 
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
