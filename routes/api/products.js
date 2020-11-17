@@ -107,7 +107,7 @@ router.delete('/user/:userID', auth, (req, res) => {
                 { $set: listOfProducts },
                 { new: true }
             );
-            return res.send('Product Updated!');
+            return res.send('Product Deleted!');
 
             // ADD ADDITIONAL PRODUCT TO USER PRODUCT LIST
             listOfProducts.userProducts.unshift(productInfo);
