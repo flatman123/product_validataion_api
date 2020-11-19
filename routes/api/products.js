@@ -127,7 +127,8 @@ router.delete('/user/purgeproducts/:userID', auth, async (req, res) => {
     try {
         const listOfProducts = await Products.findOne({ user: req.params.userID });
         console.log(listOfProducts);
-
+        
+        /* NEED TO FIX THIS LOGIC */
         if (!listOfProducts) {
             return res.status(400).json({ msg: 'Server Error' });
         };
