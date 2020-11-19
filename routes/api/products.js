@@ -92,20 +92,20 @@ router.put('/user/:userID', [auth,
 // DELETE /products/user/:userID
 // Delete the whole list or a single product.
 // @Access Private
-router.delete('/user/:userID', auth, (req, res) => {
+router.delete('/user/:userID', auth, async (req, res) => {
     const productID = req.body._id;
     try {
         const listOfProducts = await Products.findOne({ user: req.params.userID });
 
         if ( productID ) {
-            const product = listOfProducts.userProducts.find(item => item['_id'] == productID);
-            const productIndex = listOfProducts.userProducts.indexOf(product);                
-            listOfProducts.userProducts.slice(productIndex);
-
-            await Products.findOneAndDelete(
-                { user: req.appUser.id },
-                { $set: listOfProducts }, // <-- change logic
-                { new: true }
+            let product = listOfProducts.userProducts.find(item => item['_id'] == productID);
+            const productIndex = listOfProducts.userProducts.indexOf(product);
+            product = listOfProducts.userProducts[productIndex];
+            
+            await Products.updateOne(
+                {},
+                { $pull: { userProducts: product } },
+                { multi: true }
             );
             return res.send('Product Deleted!');
         };
