@@ -92,12 +92,12 @@ router.put('/user/:userID', [auth,
 // DELETE /products/user/:userID
 // Delete a single product from user product list.
 // @Access Private
-router.delete('/user/:userID', auth, async (req, res) => {
+router.delete('/user/myproducts/:userID', auth, async (req, res) => {
     const productID = req.body._id;
     try {
         const listOfProducts = await Products.findOne({ user: req.params.userID });
         let product = listOfProducts.userProducts.find(item => item['_id'] == productID);
-        console.log(product)
+
         // UPDATE EXISTING PRODUCT
         if ( product !== undefined ) {
             const productIndex = listOfProducts.userProducts.indexOf(product);
@@ -108,7 +108,7 @@ router.delete('/user/:userID', auth, async (req, res) => {
                 { $pull: { userProducts: product } },
                 { multi: true }
             );
-            return res.send('Product Deleted!');
+            return res.send('Product deleted from list!');
         };
         return res.status(400).send('Server Error');
 
@@ -119,16 +119,40 @@ router.delete('/user/:userID', auth, async (req, res) => {
     };
 });
 
+
+// DELETE api/products/user/purgeproducts/:userID
+// Purge all products within user list
+// @Access Private
+router.delete('/user/purgeproducts/:userID', auth, async (req, res) => {
+    try {
+        const listOfProducts = await Products.findOne({ user: req.params.userID });
+        console.log(listOfProducts);
+
+        if (!listOfProducts) {
+            return res.status(400).json({ msg: 'Server Error' });
+        };
+
+        // await Products.findOneAndDelete({userProducts: listOfProducts.userProducts})
+        return res.send('All products were deleted!');
+
+
+    } catch(err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+
 // GET /user/products/:userID
 // Get list of user products
 // @access private
-router.get('/user/products/:userID', auth, async(req, res) => {
+router.get('/user/myproducts/:userID', auth, async(req, res) => {
     try{
-        const listOfProducts = await Products.find({}).populate('user', ['name', 'avatar']);
-        if ( !listOfProducts ) {
-            return res.status(400).json({ msg: 'Server Error'});
+        const listOfProducts = await Products.findOne({ user: req.params.userID }).populate('user', ['name', 'avatar']);
+        if ( listOfProducts.userProducts.length === 0 ) {
+            return res.status(400).send('Hmm, We\'re not seeing any products listed!');
         };
         return res.json(listOfProducts);
+
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
