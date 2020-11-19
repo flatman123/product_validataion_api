@@ -90,15 +90,16 @@ router.put('/user/:userID', [auth,
 });
 
 // DELETE /products/user/:userID
-// Delete the whole list or a single product.
+// Delete a single product from user product list.
 // @Access Private
 router.delete('/user/:userID', auth, async (req, res) => {
     const productID = req.body._id;
     try {
         const listOfProducts = await Products.findOne({ user: req.params.userID });
-
-        if ( productID ) {
-            let product = listOfProducts.userProducts.find(item => item['_id'] == productID);
+        let product = listOfProducts.userProducts.find(item => item['_id'] == productID);
+        console.log(product)
+        // UPDATE EXISTING PRODUCT
+        if ( product !== undefined ) {
             const productIndex = listOfProducts.userProducts.indexOf(product);
             product = listOfProducts.userProducts[productIndex];
             
@@ -109,15 +110,25 @@ router.delete('/user/:userID', auth, async (req, res) => {
             );
             return res.send('Product Deleted!');
         };
-            // ADD ADDITIONAL PRODUCT TO USER PRODUCT LIST
-            listOfProducts.userProducts.unshift(productInfo);
-            await Products.findOneAndUpdate(
-                { user: req.appUser.id },
-                { $set: listOfProducts },
-                { new: true }
-            );            
-            return res.send('All products were deleted from list!');
- 
+        return res.status(400).send('Server Error');
+
+    } catch(err) {
+
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    };
+});
+
+// GET /user/products/:userID
+// Get list of user products
+// @access private
+router.get('/user/products/:userID', auth, async(req, res) => {
+    try{
+        const listOfProducts = await Products.find({}).populate('user', ['name', 'avatar']);
+        if ( !listOfProducts ) {
+            return res.status(400).json({ msg: 'Server Error'});
+        };
+        return res.json(listOfProducts);
     } catch(err) {
         console.error(err.message);
         res.status(500).send('Server Error');
