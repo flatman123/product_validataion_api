@@ -125,22 +125,13 @@ router.delete('/user/myproducts/:userID', auth, async (req, res) => {
 // @Access Private
 router.delete('/user/purgeproducts/:userID', auth, async (req, res) => {
     try {
-        const listOfProducts = await Products.findOne({ user: req.params.userID });
-        console.log(listOfProducts);
-        
-        /* NEED TO FIX THIS LOGIC */
-        if (!listOfProducts) {
-            return res.status(400).json({ msg: 'Server Error' });
-        };
-
-        // await Products.findOneAndDelete({userProducts: listOfProducts.userProducts})
+        await Products.findOneAndDelete({ user: req.params.userID })
         return res.send('All products were deleted!');
-
 
     } catch(err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
-    }
+        return res.status(500).send('Server Error');
+    };
 });
 
 // GET /user/products/:userID
